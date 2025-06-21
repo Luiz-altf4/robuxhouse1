@@ -1,454 +1,211 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+<!DOCTYPE html><html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Robux House ✨ Loja Oficial</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
-<link rel="icon" href="https://cdn.iconscout.com/icon/free/png-256/roblox-282749.png" />
-<style>
-  :root {
-    --preto: #000;
-    --branco: #fff;
-    --cinza: #f0f0f0;
-    --azul-claro: #00e5ff;
-    --verde: #38a169;
-    --vermelho: #e53e3e;
-    --fundo-claro: linear-gradient(135deg, #fff, #ddd);
-    --fundo-escuro: linear-gradient(135deg, #000, #333);
-    --cor-texto-claro: #000;
-    --cor-texto-escuro: #eee;
-  }
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
-  body {
-    font-family: 'Poppins', sans-serif;
-    background: var(--fundo-escuro);
-    color: var(--cor-texto-escuro);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    min-height: 100vh;
-    transition: background 0.5s, color 0.5s;
-  }
-  body.light {
-    background: var(--fundo-claro);
-    color: var(--cor-texto-claro);
-  }
-  header {
-    text-align: center;
-    margin-bottom: 40px;
-  }
-  header h1 {
-    font-size: 3rem;
-    margin-top: 10px;
-    color: var(--azul-claro);
-    transition: color 0.5s;
-  }
-  body.light header h1 {
-    color: #007f9e;
-  }
-  p.subtitle {
-    font-size: 1.2rem;
-    margin-top: 8px;
-    color: #666;
-  }
-  body.light p.subtitle {
-    color: #444;
-  }
-  .cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-    width: 100%;
-    max-width: 1200px;
-  }
-  .card {
-    background: var(--branco);
-    border-radius: 15px;
-    padding: 20px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    text-align: center;
-    color: var(--preto);
-    transition: background 0.5s, color 0.5s;
-  }
-  body.dark .card {
-    background: #222;
-    color: var(--cor-texto-escuro);
-    box-shadow: 0 4px 12px rgba(0,229,255,0.4);
-  }
-  .card h3 {
-    font-size: 1.5rem;
-    color: var(--azul-claro);
-  }
-  body.light .card h3 {
-    color: #007f9e;
-  }
-  .card p {
-    margin: 10px 0;
-    font-size: 1rem;
-  }
-  .card button {
-    padding: 10px 20px;
-    background: var(--azul-claro);
-    color: var(--preto);
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background 0.3s;
-  }
-  .card button:hover {
-    background: #00bcd4;
-  }
-  .modal {
-    display: none;
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    justify-content: center;
-    align-items: center;
-    z-index: 999;
-  }
-  .modal-content {
-    background: #fff;
-    padding: 30px;
-    border-radius: 10px;
-    width: 90%;
-    max-width: 400px;
-    color: #000;
-  }
-  body.dark .modal-content {
-    background: #222;
-    color: var(--cor-texto-escuro);
-    box-shadow: 0 0 10px rgba(0,229,255,0.5);
-  }
-  .modal-content h2 {
-    margin-bottom: 20px;
-  }
-  .modal-content input,
-  .modal-content textarea {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 1rem;
-    color: #000;
-    background: #fff;
-    transition: background 0.5s, color 0.5s;
-  }
-  body.dark .modal-content input,
-  body.dark .modal-content textarea {
-    background: #333;
-    color: var(--cor-texto-escuro);
-    border-color: #00e5ff;
-  }
-  .modal-content button {
-    width: 100%;
-    padding: 10px;
-    background: var(--azul-claro);
-    border: none;
-    color: var(--preto);
-    font-weight: bold;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s;
-  }
-  .modal-content button:hover {
-    background: #00bcd4;
-  }
-  .message {
-    margin-top: 30px;
-    padding: 15px;
-    background: var(--verde);
-    color: var(--branco);
-    border-radius: 10px;
-    display: none;
-    font-weight: bold;
-    text-align: center;
-    max-width: 400px;
-    box-shadow: 0 0 12px var(--verde);
-  }
-  #bot-ajuda {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: var(--azul-claro);
-    border: none;
-    padding: 12px;
-    border-radius: 50%;
-    font-size: 20px;
-    color: var(--preto);
-    cursor: pointer;
-    box-shadow: 0 0 10px rgba(0,229,255,0.7);
-    z-index: 10000;
-  }
-  #chatbox {
-    display: none;
-    position: fixed;
-    bottom: 80px;
-    right: 20px;
-    width: 300px;
-    background: var(--branco);
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    padding: 10px;
-    z-index: 10000;
-    color: #000;
-    transition: background 0.5s, color 0.5s;
-  }
-  body.dark #chatbox {
-    background: #222;
-    color: var(--cor-texto-escuro);
-    border-color: #00e5ff;
-  }
-  #historico, #avaliacoes, #suporte, #painelAdmin {
-    margin-top: 40px;
-    background: var(--branco);
-    color: var(--preto);
-    padding: 20px;
-    border-radius: 10px;
-    width: 100%;
-    max-width: 600px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    transition: background 0.5s, color 0.5s;
-  }
-  body.dark #historico, body.dark #avaliacoes, body.dark #suporte, body.dark #painelAdmin {
-    background: #222;
-    color: var(--cor-texto-escuro);
-    box-shadow: 0 4px 12px rgba(0,229,255,0.4);
-  }
-  #historico h3, #avaliacoes h3, #suporte h3, #painelAdmin h3 {
-    margin-bottom: 10px;
-    color: var(--azul-claro);
-  }
-  body.light #historico h3, body.light #avaliacoes h3, body.light #suporte h3, body.light #painelAdmin h3 {
-    color: #007f9e;
-  }
-  #historico ul, #avaliacoes ul, #painelAdmin ul {
-    list-style: none;
-    padding: 0;
-    max-height: 200px;
-    overflow-y: auto;
-    border-top: 1px solid #ccc;
-  }
-  #historico li, #avaliacoes li, #painelAdmin li {
-    margin-bottom: 8px;
-    border-bottom: 1px dashed #ccc;
-    padding-bottom: 6px;
-    word-break: break-word;
-  }
-  #loginSection {
-    margin-bottom: 30px;
-    width: 100%;
-    max-width: 400px;
-    background: var(--branco);
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    color: var(--preto);
-    transition: background 0.5s, color 0.5s;
-    text-align: center;
-  }
-  body.dark #loginSection {
-    background: #222;
-    color: var(--cor-texto-escuro);
-    box-shadow: 0 4px 12px rgba(0,229,255,0.4);
-  }
-  #loginSection input {
-    width: 80%;
-    padding: 10px;
-    font-size: 1rem;
-    margin-bottom: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    color: #000;
-    background: #fff;
-    transition: background 0.5s, color 0.5s;
-  }
-  body.dark #loginSection input {
-    background: #333;
-    color: var(--cor-texto-escuro);
-    border-color: #00e5ff;
-  }
-  #loginSection button {
-    padding: 10px 20px;
-    background: var(--azul-claro);
-    border: none;
-    color: var(--preto);
-    font-weight: bold;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s;
-  }
-  #loginSection button:hover {
-    background: #00bcd4;
-  }
-  #toggleThemeBtn {
-    position: fixed;
-    top: 15px;
-    right: 15px;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 8px;
-    background: var(--azul-claro);
-    color: var(--preto);
-    font-weight: bold;
-    cursor: pointer;
-    box-shadow: 0 0 8px rgba(0,229,255,0.7);
-    z-index: 10001;
-    transition: background 0.3s;
-  }
-  #toggleThemeBtn:hover {
-    background: #00bcd4;
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Robux House ✨ Loja Oficial</title>
+  <link rel="icon" href="https://cdn.iconscout.com/icon/free/png-256/roblox-282749.png" type="image/png">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --roxo: #6a11cb;
+      --preto: #141414;
+      --azul-claro: #00e5ff;
+      --verde: #38a169;
+      --cinza-claro: #cbd5e0;
+      --fundo-gradient: linear-gradient(to right, #000000, #ffffff);
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--fundo-gradient);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    header h1 {
+      font-size: 3.5rem;
+      color: var(--azul-claro);
+      text-shadow: 2px 2px 12px #000;
+    }
+    header p {
+      font-size: 1.2rem;
+      color: var(--cinza-claro);
+      margin-top: 10px;
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      width: 100%;
+      max-width: 1200px;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      padding: 24px;
+      text-align: center;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 16px 32px rgba(0, 229, 255, 0.3);
+    }
+    .card h3 {
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+      color: var(--azul-claro);
+    }
+    .card p {
+      font-size: 1.2rem;
+      margin-bottom: 16px;
+    }
+    .card button {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 12px;
+      background-color: var(--azul-claro);
+      color: #141414;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .card button:hover {
+      background-color: #00bcd4;
+    }
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 9999;
+    }
+    .modal-content {
+      background: #1a1a1a;
+      padding: 30px;
+      border-radius: 12px;
+      max-width: 400px;
+      width: 90%;
+      box-shadow: 0 0 20px rgba(0, 229, 255, 0.3);
+      color: white;
+    }
+    .modal-content h2 {
+      margin-bottom: 20px;
+      color: var(--azul-claro);
+    }
+    .modal-content input,
+    .modal-content button {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+    .modal-content input {
+      background: #2d2d2d;
+      color: white;
+    }
+    .modal-content button {
+      background: var(--azul-claro);
+      color: #141414;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .modal-content button:hover {
+      background: #00bcd4;
+    }
+    .message {
+      margin-top: 30px;
+      background: var(--verde);
+      color: white;
+      padding: 16px;
+      border-radius: 10px;
+      display: none;
+      font-weight: bold;
+      text-align: center;
+      box-shadow: 0 0 12px var(--verde);
+    }
+    footer {
+      margin-top: 60px;
+      font-size: 0.9rem;
+      color: #a0aec0;
+      text-align: center;
+    }
+  </style>
 </head>
-<body class="dark">
-<button id="toggleThemeBtn" title="Alternar modo claro/escuro">Modo Claro</button>
+<body>
+  <header>
+    <h1>Robux House</h1>
+    <p>✨ Compre Robux com confiança e receba na hora ✨</p>
+  </header>  <div class="cards">
+    <div class="card"><h3>🎁 Robux Especial</h3><p>1.500 Robux</p><button onclick="comprar(35.00, 'Robux Especial')">Comprar</button></div>
+    <div class="card"><h3>40 Robux</h3><p>R$1,00</p><button onclick="comprar(1.00, '40 Robux')">Comprar</button></div>
+    <div class="card"><h3>80 Robux</h3><p>R$2,00</p><button onclick="comprar(2.00, '80 Robux')">Comprar</button></div>
+    <div class="card"><h3>400 Robux</h3><p>R$10,00</p><button onclick="comprar(10.00, '400 Robux')">Comprar</button></div>
+    <div class="card"><h3>800 Robux</h3><p>R$20,00</p><button onclick="comprar(20.00, '800 Robux')">Comprar</button></div>
+    <div class="card"><h3>1700 Robux</h3><p>R$40,00</p><button onclick="comprar(40.00, '1700 Robux')">Comprar</button></div>
+    <div class="card"><h3>4500 Robux</h3><p>R$100,00</p><button onclick="comprar(100.00, '4500 Robux')">Comprar</button></div>
+    <div class="card"><h3>10.000 Robux</h3><p>R$200,00</p><button onclick="comprar(200.00, '10.000 Robux')">Comprar</button></div>
+  </div>  <div class="message" id="message"></div>  <div class="modal" id="cupomModal">
+    <div class="modal-content">
+      <h2>Tem cupom de desconto?</h2>
+      <input type="text" id="cupomInput" placeholder="Digite o cupom (opcional)">
+      <button onclick="verificarCupom()">Continuar</button>
+    </div>
+  </div>  <div class="modal" id="pagamentoModal">
+    <div class="modal-content">
+      <h2>Pagamento</h2>
+      <input type="text" placeholder="Número do cartão">
+      <input type="text" placeholder="Nome no cartão">
+      <input type="text" placeholder="Validade (MM/AA)">
+      <input type="password" placeholder="CVV">
+      <button onclick="finalizarCompra()">Finalizar compra</button>
+    </div>
+  </div>  <footer>
+    &copy; 2025 Robux House • Criado por Mopper e Zxkl
+  </footer>  <script>
+    let precoOriginal = 0;
+    let descricaoProduto = '';
 
-<header>
-  <h1>Robux House</h1>
-  <p class="subtitle">✨ Compre Robux com confiança e receba na hora ✨</p>
-</header>
+    function comprar(preco, descricao) {
+      precoOriginal = preco;
+      descricaoProduto = descricao;
+      document.getElementById('cupomModal').style.display = 'flex';
+    }
 
-<section id="loginSection">
-  <div id="loginForm">
-    <input type="text" id="usernameInput" placeholder="Digite seu nome para entrar" />
-    <button onclick="login()">Entrar</button>
-  </div>
-  <div id="userGreeting" style="display:none;">
-    <p>Olá, <strong id="userNameDisplay"></strong>!</p>
-    <button onclick="logout()">Sair</button>
-    <button onclick="togglePainelAdminPrompt()">Painel Admin</button>
-  </div>
-</section>
+    function verificarCupom() {
+      const cupom = document.getElementById('cupomInput').value.trim();
+      if (cupom.toLowerCase() === 'donos2025') {
+        precoOriginal *= 0.8;
+      }
+      document.getElementById('cupomModal').style.display = 'none';
+      document.getElementById('pagamentoModal').style.display = 'flex';
+    }
 
-<div class="cards" id="produtosCards" style="display:none;">
-  <div class="card">
-    <h3>🎁 Robux Especial</h3>
-    <p>1.500 Robux</p>
-    <button onclick="comprar(35.00, 'Robux Especial')">Comprar</button>
-  </div>
-  <div class="card">
-    <h3>40 Robux</h3>
-    <p>R$1,00</p>
-    <button onclick="comprar(1.00, '40 Robux')">Comprar</button>
-  </div>
-  <div class="card">
-    <h3>80 Robux</h3>
-    <p>R$2,00</p>
-    <button onclick="comprar(2.00, '80 Robux')">Comprar</button>
-  </div>
-  <div class="card">
-    <h3>400 Robux</h3>
-    <p>R$10,00</p>
-    <button onclick="comprar(10.00, '400 Robux')">Comprar</button>
-  </div>
-  <div class="card">
-    <h3>800 Robux</h3>
-    <p>R$20,00</p>
-    <button onclick="comprar(20.00, '800 Robux')">Comprar</button>
-  </div>
-  <div class="card">
-    <h3>1700 Robux</h3>
-    <p>R$40,00</p>
-    <button onclick="comprar(40.00, '1700 Robux')">Comprar</button>
-  </div>
-  <div class="card">
-    <h3>4500 Robux</h3>
-    <p>R$100,00</p>
-    <button onclick="comprar(100.00, '4500 Robux')">Comprar</button>
-  </div>
-  <div class="card">
-    <h3>10.000 Robux</h3>
-    <p>R$200,00</p>
-    <button onclick="comprar(200.00, '10.000 Robux')">Comprar</button>
-  </div>
-</div>
-
-<div class="message" id="message"></div>
-
-<div id="historico" style="display:none;">
-  <h3>Histórico de Compras</h3>
-  <ul id="lista-historico"></ul>
-</div>
-
-<div id="avaliacoes" style="display:none;">
-  <h3>Avaliações</h3>
-  <ul id="lista-avaliacoes"></ul>
-  <textarea id="novaAvaliacao" placeholder="Escreva sua avaliação..."></textarea>
-  <button onclick="enviarAvaliacao()">Enviar Avaliação</button>
-</div>
-
-<div id="suporte" style="display:none;">
-  <h3>Suporte</h3>
-  <input type="email" id="emailSuporte" placeholder="Seu email" />
-  <textarea id="mensagemSuporte" placeholder="Descreva seu problema"></textarea>
-  <button onclick="enviarMensagemSuporte()">Enviar Mensagem</button>
-</div>
-
-<div id="painelAdmin" style="display:none;">
-  <h3>Painel Admin</h3>
-  <strong>Compras:</strong>
-  <ul id="adminListaCompras"></ul>
-  <strong>Avaliações:</strong>
-  <ul id="adminListaAvaliacoes"></ul>
-</div>
-
-<div class="modal" id="cupomModal">
-  <div class="modal-content">
-    <h2>Tem cupom de desconto?</h2>
-    <input type="text" id="cupomInput" placeholder="Digite o cupom (opcional)" />
-    <button onclick="verificarCupom()">Continuar</button>
-  </div>
-</div>
-
-<div class="modal" id="pagamentoModal">
-  <div class="modal-content">
-    <h2>Pagamento</h2>
-    <input type="text" id="cartao" placeholder="Número do cartão" maxlength="19" />
-    <input type="text" id="nome" placeholder="Nome no cartão" />
-    <input type="text" id="validade" placeholder="Validade (MM/AA)" maxlength="5" />
-    <input type="password" id="cvv" placeholder="CVV" maxlength="4" />
-    <button id="finalizarCompraBtn" onclick="finalizarCompra()">Finalizar compra</button>
-  </div>
-</div>
-
-<div id="chatbox">
-  <strong>Bot de Ajuda:</strong>
-  <p>Use o cupom <b>Donos2025</b> para 20% de desconto!</p>
-  <p>Precisa de suporte? Role até o fim e envie uma mensagem.</p>
-</div>
-
-<button id="bot-ajuda" onclick="toggleBot()" title="Ajuda">💬</button>
-
-<footer>
-  &copy; 2025 Robux House • Criado por Mopper e Zxkl
-</footer>
-
-<script>
-  // Variáveis globais
-  let precoOriginal = 0;
-  let precoComDesconto = 0;
-  let descricaoProduto = '';
-  let currentUser = null;
-  const adminPassword = 'admin2025';
-  let painelAdminAberto = false;
-
-  // Alternar tema
-  const toggleThemeBtn = document.getElementById('toggleThemeBtn');
-  toggleThemeBtn.onclick = () => {
-    if(document.body.classList.contains('light')){
-      document.body.classList.remove('light');
-      toggleThemeBtn.textContent = 'Modo Claro';
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.body.classList.add('light');
-      toggleThemeBtn.textContent = 'Modo Escuro';
+    function finalizarCompra() {
+      document.getElementById('pagamentoModal').style.display = 'none';
+      const msg = document.getElementById('message');
+      msg.innerText = `✅ Compra de ${descricaoProduto} finalizada por R$${precoOriginal.toFixed(2)}.`;
+      msg.style.display = 'block';
+      setTimeout(() => msg.style.display = 'none', 6000);
+    }
+  </script></body>
+</html>
