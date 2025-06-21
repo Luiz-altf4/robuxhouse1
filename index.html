@@ -1,4 +1,4 @@
-<!-- Código completo com histórico, avaliações, suporte e bot expandido --><!DOCTYPE html><html lang="pt-BR">
+<!-- Código atualizado com correções de bugs, validação e localStorage --><!DOCTYPE html><html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,7 +12,6 @@
       --azul-claro: #00e5ff;
       --verde: #38a169;
       --vermelho: #e53e3e;
-      --azul-escuro: #0f172a;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -28,12 +27,7 @@
       text-align: center;
       margin-bottom: 40px;
     }
-    header svg {
-      width: 60px;
-      height: 60px;
-      fill: var(--azul-claro);
-    }
-    header h1 { font-size: 3rem; margin-top: 10px; }
+    header h1 { font-size: 3rem; margin-top: 10px; color: var(--azul-claro); }
     p.subtitle { font-size: 1.2rem; margin-top: 8px; color: #333; }
     .cards {
       display: grid;
@@ -161,7 +155,6 @@
 </head>
 <body>
   <header>
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60"><path d="M15.45 12.36L42.4 0.63a3.02 3.02 0 0 1 3.59 1.17"/></svg>
     <h1>Robux House</h1>
     <p class="subtitle">✨ Compre Robux com confiança e receba na hora ✨</p>
   </header>
@@ -180,9 +173,9 @@
   </div>
   <div id="suporte">
     <h3>Suporte</h3>
-    <input type="email" placeholder="Seu email">
-    <textarea placeholder="Descreva seu problema"></textarea>
-    <button onclick="alert('Mensagem enviada! Em breve entraremos em contato.')">Enviar Mensagem</button>
+    <input type="email" id="emailSuporte" placeholder="Seu email">
+    <textarea id="mensagemSuporte" placeholder="Descreva seu problema"></textarea>
+    <button onclick="enviarMensagemSuporte()">Enviar Mensagem</button>
   </div>
   <div class="modal" id="cupomModal">
     <div class="modal-content">
@@ -194,17 +187,17 @@
   <div class="modal" id="pagamentoModal">
     <div class="modal-content">
       <h2>Pagamento</h2>
-      <input type="text" placeholder="Número do cartão">
-      <input type="text" placeholder="Nome no cartão">
-      <input type="text" placeholder="Validade (MM/AA)">
-      <input type="password" placeholder="CVV">
+      <input type="text" id="cartao" placeholder="Número do cartão">
+      <input type="text" id="nome" placeholder="Nome no cartão">
+      <input type="text" id="validade" placeholder="Validade (MM/AA)">
+      <input type="password" id="cvv" placeholder="CVV">
       <button onclick="finalizarCompra()">Finalizar compra</button>
     </div>
   </div>
   <div id="chatbox">
     <strong>Bot de Ajuda:</strong>
-    <p>Precisa de ajuda? Use o cupom <b>Donos2025</b> para 20% OFF!</p>
-    <p>Dúvidas sobre pagamento? Clique nos produtos e siga as instruções.</p>
+    <p>Use o cupom <b>Donos2025</b> para 20% de desconto!</p>
+    <p>Precisa de suporte? Role até o fim e envie uma mensagem.</p>
   </div>
   <button id="bot-ajuda" onclick="toggleBot()">💬</button>
   <footer>
@@ -212,45 +205,95 @@
   </footer>
   <script>
     let precoOriginal = 0;
-    let descricaoProduto = '';
-    function comprar(preco, descricao) {
-      precoOriginal = preco;
-      descricaoProduto = descricao;
-      document.getElementById('cupomModal').style.display = 'flex';
-    }
-    function verificarCupom() {
-      const cupom = document.getElementById('cupomInput').value.trim();
-      if (cupom.toLowerCase() === 'donos2025') precoOriginal *= 0.8;
-      document.getElementById('cupomModal').style.display = 'none';
-      document.getElementById('pagamentoModal').style.display = 'flex';
-    }
-    function finalizarCompra() {
-      document.getElementById('pagamentoModal').style.display = 'none';
-      const msg = document.getElementById('message');
-      msg.innerText = `✅ Compra de ${descricaoProduto} finalizada por R$${precoOriginal.toFixed(2)}.`;
-      msg.style.display = 'block';
-      setTimeout(() => msg.style.display = 'none', 6000);
-      salvarHistorico(descricaoProduto, precoOriginal);
-    }
-    function toggleBot() {
-      const chat = document.getElementById('chatbox');
-      chat.style.display = chat.style.display === 'block' ? 'none' : 'block';
-    }
-    function salvarHistorico(produto, valor) {
-      const lista = document.getElementById('lista-historico');
-      const item = document.createElement('li');
-      item.textContent = `${new Date().toLocaleString()} - ${produto} - R$${valor.toFixed(2)}`;
-      lista.prepend(item);
-    }
-    function enviarAvaliacao() {
-      const texto = document.getElementById('novaAvaliacao').value.trim();
-      if (!texto) return alert('Escreva algo!');
-      const lista = document.getElementById('lista-avaliacoes');
-      const item = document.createElement('li');
-      item.textContent = texto;
-      lista.prepend(item);
-      document.getElementById('novaAvaliacao').value = '';
-    }
+    let descricaoProduto = '';window.onload = () => {
+  carregarHistorico();
+  carregarAvaliacoes();
+}
+
+function comprar(preco, descricao) {
+  precoOriginal = preco;
+  descricaoProduto = descricao;
+  document.getElementById('cupomModal').style.display = 'flex';
+}
+
+function verificarCupom() {
+  const cupom = document.getElementById('cupomInput').value.trim();
+  if (cupom.toLowerCase() === 'donos2025') precoOriginal *= 0.8;
+  document.getElementById('cupomModal').style.display = 'none';
+  document.getElementById('pagamentoModal').style.display = 'flex';
+}
+
+function finalizarCompra() {
+  const cartao = document.getElementById('cartao').value.trim();
+  const nome = document.getElementById('nome').value.trim();
+  const validade = document.getElementById('validade').value.trim();
+  const cvv = document.getElementById('cvv').value.trim();
+  if (!cartao || !nome || !validade || !cvv) return alert('Preencha todos os campos.');
+  document.getElementById('pagamentoModal').style.display = 'none';
+  const msg = document.getElementById('message');
+  msg.innerText = `✅ Compra de ${descricaoProduto} finalizada por R$${precoOriginal.toFixed(2)}.`;
+  msg.style.display = 'block';
+  salvarHistorico(descricaoProduto, precoOriginal);
+  setTimeout(() => msg.style.display = 'none', 6000);
+}
+
+function salvarHistorico(produto, valor) {
+  const lista = document.getElementById('lista-historico');
+  const item = document.createElement('li');
+  item.textContent = `${new Date().toLocaleString()} - ${produto} - R$${valor.toFixed(2)}`;
+  lista.prepend(item);
+  const dados = JSON.parse(localStorage.getItem('historico') || '[]');
+  dados.unshift(item.textContent);
+  localStorage.setItem('historico', JSON.stringify(dados));
+}
+
+function carregarHistorico() {
+  const lista = document.getElementById('lista-historico');
+  const dados = JSON.parse(localStorage.getItem('historico') || '[]');
+  dados.forEach(item => {
+    const li = document.createElement('li');
+    li.textContent = item;
+    lista.appendChild(li);
+  });
+}
+
+function enviarAvaliacao() {
+  const texto = document.getElementById('novaAvaliacao').value.trim();
+  if (!texto) return alert('Escreva algo!');
+  const lista = document.getElementById('lista-avaliacoes');
+  const item = document.createElement('li');
+  item.textContent = texto;
+  lista.prepend(item);
+  document.getElementById('novaAvaliacao').value = '';
+  const dados = JSON.parse(localStorage.getItem('avaliacoes') || '[]');
+  dados.unshift(texto);
+  localStorage.setItem('avaliacoes', JSON.stringify(dados));
+}
+
+function carregarAvaliacoes() {
+  const lista = document.getElementById('lista-avaliacoes');
+  const dados = JSON.parse(localStorage.getItem('avaliacoes') || '[]');
+  dados.forEach(item => {
+    const li = document.createElement('li');
+    li.textContent = item;
+    lista.appendChild(li);
+  });
+}
+
+function enviarMensagemSuporte() {
+  const email = document.getElementById('emailSuporte').value.trim();
+  const texto = document.getElementById('mensagemSuporte').value.trim();
+  if (!email || !texto) return alert('Preencha todos os campos.');
+  alert('Mensagem enviada com sucesso! Responderemos em breve.');
+  document.getElementById('emailSuporte').value = '';
+  document.getElementById('mensagemSuporte').value = '';
+}
+
+function toggleBot() {
+  const chat = document.getElementById('chatbox');
+  chat.style.display = chat.style.display === 'block' ? 'none' : 'block';
+}
+
   </script>
 </body>
 </html>
