@@ -143,6 +143,43 @@
       text-align: center;
       box-shadow: 0 0 12px var(--verde);
     }
+    .bot-ajuda {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: var(--azul-claro);
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      font-size: 24px;
+      box-shadow: 0 0 12px var(--azul-claro);
+      color: black;
+      z-index: 10000;
+    }
+    .bot-janela {
+      position: fixed;
+      bottom: 80px;
+      right: 20px;
+      background: #1a1a1a;
+      color: white;
+      padding: 20px;
+      border-radius: 12px;
+      display: none;
+      width: 300px;
+      box-shadow: 0 0 20px rgba(0,229,255,0.5);
+    }
+    #historico {
+      margin-top: 40px;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 800px;
+      width: 100%;
+    }
     footer {
       margin-top: 60px;
       font-size: 0.9rem;
@@ -155,7 +192,8 @@
   <header>
     <h1>Robux House</h1>
     <p>✨ Compre Robux com confiança e receba na hora ✨</p>
-  </header>  <div class="cards">
+  </header>
+  <div class="cards">
     <div class="card"><h3>🎁 Robux Especial</h3><p>1.500 Robux</p><button onclick="comprar(35.00, 'Robux Especial')">Comprar</button></div>
     <div class="card"><h3>40 Robux</h3><p>R$1,00</p><button onclick="comprar(1.00, '40 Robux')">Comprar</button></div>
     <div class="card"><h3>80 Robux</h3><p>R$2,00</p><button onclick="comprar(2.00, '80 Robux')">Comprar</button></div>
@@ -164,13 +202,17 @@
     <div class="card"><h3>1700 Robux</h3><p>R$40,00</p><button onclick="comprar(40.00, '1700 Robux')">Comprar</button></div>
     <div class="card"><h3>4500 Robux</h3><p>R$100,00</p><button onclick="comprar(100.00, '4500 Robux')">Comprar</button></div>
     <div class="card"><h3>10.000 Robux</h3><p>R$200,00</p><button onclick="comprar(200.00, '10.000 Robux')">Comprar</button></div>
-  </div>  <div class="message" id="message"></div>  <div class="modal" id="cupomModal">
+  </div>
+  <div class="message" id="message"></div>
+  <div id="historico"></div>
+  <div class="modal" id="cupomModal">
     <div class="modal-content">
       <h2>Tem cupom de desconto?</h2>
       <input type="text" id="cupomInput" placeholder="Digite o cupom (opcional)">
       <button onclick="verificarCupom()">Continuar</button>
     </div>
-  </div>  <div class="modal" id="pagamentoModal">
+  </div>
+  <div class="modal" id="pagamentoModal">
     <div class="modal-content">
       <h2>Pagamento</h2>
       <input type="text" placeholder="Número do cartão">
@@ -179,33 +221,55 @@
       <input type="password" placeholder="CVV">
       <button onclick="finalizarCompra()">Finalizar compra</button>
     </div>
-  </div>  <footer>
+  </div>
+  <div class="bot-ajuda" onclick="abrirBot()">💬</div>
+  <div class="bot-janela" id="botJanela">
+    <strong>Robô Ajuda:</strong>
+    <p>• Use o cupom <code>Donos2025</code> para 20% de desconto!<br>
+    • Seus Robux chegam após o pagamento.<br>
+    • Dúvidas? Fale com Mopper no Discord.</p>
+  </div>
+  <footer>
     &copy; 2025 Robux House • Criado por Mopper e Zxkl
-  </footer>  <script>
+  </footer>
+  <script>
     let precoOriginal = 0;
-    let descricaoProduto = '';
+    let descricaoProduto = '';function comprar(preco, descricao) {
+  precoOriginal = preco;
+  descricaoProduto = descricao;
+  document.getElementById('cupomModal').style.display = 'flex';
+}
 
-    function comprar(preco, descricao) {
-      precoOriginal = preco;
-      descricaoProduto = descricao;
-      document.getElementById('cupomModal').style.display = 'flex';
-    }
+function verificarCupom() {
+  const cupom = document.getElementById('cupomInput').value.trim();
+  if (cupom.toLowerCase() === 'donos2025') {
+    precoOriginal *= 0.8;
+  }
+  document.getElementById('cupomModal').style.display = 'none';
+  document.getElementById('pagamentoModal').style.display = 'flex';
+}
 
-    function verificarCupom() {
-      const cupom = document.getElementById('cupomInput').value.trim();
-      if (cupom.toLowerCase() === 'donos2025') {
-        precoOriginal *= 0.8;
-      }
-      document.getElementById('cupomModal').style.display = 'none';
-      document.getElementById('pagamentoModal').style.display = 'flex';
-    }
+function finalizarCompra() {
+  document.getElementById('pagamentoModal').style.display = 'none';
+  const msg = document.getElementById('message');
+  msg.innerText = `✅ Compra de ${descricaoProduto} finalizada por R$${precoOriginal.toFixed(2)}.`;
+  msg.style.display = 'block';
+  registrarHistorico(descricaoProduto, precoOriginal);
+  setTimeout(() => msg.style.display = 'none', 6000);
+}
 
-    function finalizarCompra() {
-      document.getElementById('pagamentoModal').style.display = 'none';
-      const msg = document.getElementById('message');
-      msg.innerText = `✅ Compra de ${descricaoProduto} finalizada por R$${precoOriginal.toFixed(2)}.`;
-      msg.style.display = 'block';
-      setTimeout(() => msg.style.display = 'none', 6000);
-    }
-  </script></body>
+function abrirBot() {
+  const janela = document.getElementById('botJanela');
+  janela.style.display = janela.style.display === 'flex' ? 'none' : 'flex';
+}
+
+function registrarHistorico(produto, preco) {
+  const historico = document.getElementById('historico');
+  const linha = document.createElement('p');
+  linha.innerText = `🧾 ${produto} comprado por R$${preco.toFixed(2)}`;
+  historico.appendChild(linha);
+}
+
+  </script>
+</body>
 </html>
