@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+<!DOCTYPE html><html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,23 +6,28 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --azul-neon: #00e5ff;
+      --roxo: #6a11cb;
+      --preto: #141414;
+      --azul-claro: #00e5ff;
       --verde: #38a169;
-      --roxo-escuro: #24243e;
-      --texto-claro: #edf2f7;
-      --sombra: rgba(0, 230, 255, 0.25);
-      --cinza-card: rgba(255, 255, 255, 0.05);
+      --cinza-claro: #cbd5e0;
+      --fundo-gradient: linear-gradient(135deg, #1e0033, #2e003e, #0f0c29);
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
     body {
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #0f0c29, #302b63, var(--roxo-escuro));
-      color: var(--texto-claro);
+      background: var(--fundo-gradient);
+      color: white;
       display: flex;
       flex-direction: column;
       align-items: center;
       min-height: 100vh;
       padding: 20px;
+      overflow-x: hidden;
     }
     header {
       text-align: center;
@@ -31,160 +35,104 @@
     }
     header h1 {
       font-size: 3.5rem;
-      color: var(--azul-neon);
-      text-shadow: 1px 1px 6px black;
+      color: var(--azul-claro);
+      text-shadow: 2px 2px 12px #000;
     }
     header p {
       font-size: 1.2rem;
-      color: #cbd5e0;
+      color: var(--cinza-claro);
       margin-top: 10px;
     }
     .cards {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 30px;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
       width: 100%;
-      max-width: 1100px;
+      max-width: 1200px;
     }
     .card {
-      background: var(--cinza-card);
-      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.07);
+      border-radius: 20px;
       padding: 24px;
       text-align: center;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      transition: transform 0.3s, box-shadow 0.3s;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
     .card:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 14px 28px var(--sombra);
+      transform: translateY(-8px);
+      box-shadow: 0 16px 32px rgba(0, 229, 255, 0.3);
     }
     .card h3 {
-      font-size: 1.7rem;
+      font-size: 1.8rem;
       margin-bottom: 10px;
-      color: var(--azul-neon);
+      color: var(--azul-claro);
     }
     .card p {
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       margin-bottom: 16px;
     }
     .card button {
-      padding: 12px;
-      width: 100%;
+      padding: 12px 20px;
       border: none;
-      border-radius: 10px;
-      background-color: var(--azul-neon);
-      color: #1a202c;
+      border-radius: 12px;
+      background-color: var(--azul-claro);
+      color: #141414;
       font-weight: bold;
       font-size: 1rem;
       cursor: pointer;
-      transition: background 0.2s;
+      transition: background 0.3s;
     }
     .card button:hover {
       background-color: #00bcd4;
     }
     .download {
-      margin-top: 50px;
+      margin-top: 40px;
       text-align: center;
     }
     .download button {
-      padding: 16px 36px;
+      padding: 14px 30px;
       background: var(--verde);
       color: white;
       border: none;
       border-radius: 12px;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       cursor: pointer;
       transition: background 0.3s;
     }
     .download button:hover {
       background: #2f855a;
     }
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1000;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.7);
-      align-items: center;
-      justify-content: center;
-    }
-    .modal-content {
-      background: #1a202c;
-      padding: 30px;
-      border-radius: 12px;
-      width: 90%;
-      max-width: 420px;
-      text-align: center;
-    }
-    .modal-content input, .modal-content button {
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border-radius: 8px;
-      border: none;
-    }
-    .modal-content input {
-      background: #2d3748;
-      color: var(--texto-claro);
-    }
-    .modal-content button {
-      background: var(--azul-neon);
-      font-weight: bold;
-      cursor: pointer;
-    }
     .message {
       margin-top: 30px;
       background: var(--verde);
       color: white;
-      padding: 16px 30px;
+      padding: 16px;
       border-radius: 10px;
       display: none;
-      font-weight: 600;
+      font-weight: bold;
       text-align: center;
-    }
-    #historico {
-      margin-top: 40px;
-      background: rgba(255, 255, 255, 0.08);
-      padding: 20px;
-      border-radius: 12px;
-      width: 100%;
-      max-width: 700px;
-    }
-    #historico h3 {
-      margin-bottom: 10px;
-      color: var(--azul-neon);
-    }
-    footer {
-      margin-top: auto;
-      padding: 20px;
-      font-size: 0.9rem;
-      color: #a0aec0;
-      text-align: center;
+      box-shadow: 0 0 12px var(--verde);
     }
     #bot-ajuda {
       position: fixed;
       bottom: 20px;
       right: 20px;
-      background: var(--azul-neon);
+      background: var(--azul-claro);
       color: black;
-      padding: 12px 16px;
-      border-radius: 30px;
-      box-shadow: 0 0 10px var(--azul-neon);
+      padding: 12px 20px;
+      border-radius: 20px;
+      box-shadow: 0 0 12px var(--azul-claro);
       cursor: pointer;
       font-weight: bold;
-      transition: background 0.3s;
-      z-index: 999;
     }
     #chat-box {
       position: fixed;
       bottom: 80px;
       right: 20px;
-      background: #1a202c;
-      border: 1px solid #00e5ff;
+      background: #1a1a1a;
+      border: 1px solid var(--azul-claro);
       border-radius: 10px;
-      width: 280px;
+      width: 300px;
       display: none;
       flex-direction: column;
       box-shadow: 0 0 12px #00e5ff66;
@@ -195,7 +143,7 @@
       padding: 10px;
       border: none;
       resize: none;
-      background: #2d3748;
+      background: #2d2d2d;
       color: white;
       border-radius: 0 0 10px 10px;
     }
@@ -206,161 +154,73 @@
       font-size: 0.9rem;
       color: #edf2f7;
     }
+    footer {
+      margin-top: 60px;
+      font-size: 0.9rem;
+      color: #a0aec0;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
   <header>
     <h1>Robux House</h1>
-    <p>Compre Robux com segurança e praticidade</p>
-  </header>
-
-  <!-- Conteúdo será carregado dinamicamente -->
-  <div class="cards" id="cards"></div>
-
-  <div class="download">
-    <a href="RobuxCOMPROVANTE.py" download><button>💾 Baixar Script Robux</button></a>
-    <p>Compatível com Windows, Android e Linux</p>
-  </div>
-
-  <div class="message" id="message"></div>
-
-  <div class="modal" id="cupomModal">
-    <div class="modal-content">
-      <h2>Adicionar Cupom</h2>
-      <input type="text" id="cupomInput" placeholder="Digite seu cupom">
-      <button onclick="verificarCupom()">Aplicar</button>
-      <button onclick="mostrarPagamento()">Pular</button>
-    </div>
-  </div>
-
-  <div class="modal" id="pagamentoModal">
-    <div class="modal-content">
-      <h2>Pagamento</h2>
-      <input type="text" id="cartao" placeholder="Número do Cartão">
-      <input type="text" id="nome" placeholder="Nome no Cartão">
-      <input type="text" id="validade" placeholder="Validade (MM/AA)">
-      <input type="password" id="cvv" placeholder="CVV">
-      <button onclick="finalizarCompra()">Finalizar Compra</button>
-    </div>
-  </div>
-
-  <div id="historico">
-    <h3>Histórico de Compras</h3>
-    <ul id="listaHistorico" style="list-style:none; padding-left:0;"></ul>
-  </div>
-
-  <div id="bot-ajuda" onclick="abrirChat()">🤖 Ajuda</div>
+    <p>✨ Compre Robux com confiança e receba na hora ✨</p>
+  </header>  <div class="cards">
+    <div class="card"><h3>🎁 Robux Especial</h3><p>Oferta limitada! 1.500 Robux</p><button onclick="comprar(35.00, 'Robux Especial')">Comprar</button></div>
+    <div class="card"><h3>40 Robux</h3><p>R$1,00</p><button onclick="comprar(1.00, '40 Robux')">Comprar</button></div>
+    <div class="card"><h3>80 Robux</h3><p>R$2,00</p><button onclick="comprar(2.00, '80 Robux')">Comprar</button></div>
+    <div class="card"><h3>400 Robux</h3><p>R$10,00</p><button onclick="comprar(10.00, '400 Robux')">Comprar</button></div>
+    <div class="card"><h3>800 Robux</h3><p>R$20,00</p><button onclick="comprar(20.00, '800 Robux')">Comprar</button></div>
+    <div class="card"><h3>1700 Robux</h3><p>R$40,00</p><button onclick="comprar(40.00, '1700 Robux')">Comprar</button></div>
+    <div class="card"><h3>4500 Robux</h3><p>R$100,00</p><button onclick="comprar(100.00, '4500 Robux')">Comprar</button></div>
+    <div class="card"><h3>10.000 Robux</h3><p>R$200,00</p><button onclick="comprar(200.00, '10.000 Robux')">Comprar</button></div>
+  </div>  <div class="download">
+    <a href="RobuxCOMPROVANTE.py" download><button>💾 Baixar Script</button></a>
+    <p>Compatível com PC e celular</p>
+  </div>  <div class="message" id="message"></div>  <div id="bot-ajuda" onclick="abrirChat()">🤖 Ajuda</div>
   <div id="chat-box">
     <div id="chat-log"></div>
     <textarea id="chatInput" rows="2" placeholder="Digite sua pergunta..."></textarea>
-  </div>
-
-  <footer>
-    &copy; 2025 Robux House. Todos os direitos reservados.
-  </footer>
-
-  <script>
-    const produtos = [
-      { robux: '40', preco: 1 },
-      { robux: '80', preco: 2 },
-      { robux: '400', preco: 10 },
-      { robux: '800', preco: 20 },
-      { robux: '1700', preco: 40 },
-      { robux: '4500', preco: 100 },
-      { robux: '10.000', preco: 200 },
-    ];
-    const cardsContainer = document.getElementById('cards');
-    produtos.forEach(({ robux, preco }) => {
-      cardsContainer.innerHTML += `
-        <div class="card">
-          <h3>${robux} Robux</h3>
-          <p>R$${preco.toFixed(2)}</p>
-          <button onclick="comprar(${preco}, '${robux} Robux')">Comprar</button>
-        </div>`;
-    });
-
+  </div>  <footer>
+    &copy; 2025 Robux House • Criado por Mopper e Zxkl
+  </footer>  <script>
     let precoOriginal = 0;
     let descricaoProduto = '';
 
     function comprar(preco, descricao) {
       precoOriginal = preco;
       descricaoProduto = descricao;
-      document.getElementById('cupomModal').style.display = 'flex';
-    }
-
-    function verificarCupom() {
-      const cupom = document.getElementById('cupomInput').value.trim().toLowerCase();
-      if (cupom === 'donos2025') precoOriginal *= 0.8;
-      else if (cupom === 'gratis') precoOriginal = 0;
-      mostrarPagamento();
-    }
-
-    function mostrarPagamento() {
-      document.getElementById('cupomModal').style.display = 'none';
-      document.getElementById('pagamentoModal').style.display = 'flex';
+      const confirmacao = confirm(`Deseja comprar ${descricao} por R$${preco.toFixed(2)}?`);
+      if (confirmacao) finalizarCompra();
     }
 
     function finalizarCompra() {
-      const cartao = document.getElementById('cartao').value;
-      const nome = document.getElementById('nome').value;
-      const validade = document.getElementById('validade').value;
-      const cvv = document.getElementById('cvv').value;
-      if (!/^\d{16}$/.test(cartao)) return alert('Número do cartão inválido');
-      if (!nome || !validade || !/^\d{3,4}$/.test(cvv)) return alert('Preencha todos os campos corretamente');
-      document.getElementById('pagamentoModal').style.display = 'none';
-      const data = new Date().toLocaleString();
-      const compra = `✅ ${descricaoProduto} - R$${precoOriginal.toFixed(2)} em ${data}`;
       const msg = document.getElementById('message');
-      msg.innerText = compra;
+      msg.innerText = `✅ Compra de ${descricaoProduto} finalizada com sucesso! Valor: R$${precoOriginal.toFixed(2)}`;
       msg.style.display = 'block';
       setTimeout(() => msg.style.display = 'none', 6000);
-      const historico = JSON.parse(localStorage.getItem('comprasRobux') || '[]');
-      historico.push(compra);
-      localStorage.setItem('comprasRobux', JSON.stringify(historico));
-      atualizarHistorico();
-      gerarComprovante(compra);
     }
 
-    function atualizarHistorico() {
-      const lista = document.getElementById('listaHistorico');
-      lista.innerHTML = '';
-      const historico = JSON.parse(localStorage.getItem('comprasRobux') || '[]');
-      historico.forEach(item => {
-        const li = document.createElement('li');
-        li.textContent = item;
-        lista.appendChild(li);
-      });
-    }
-
-    function gerarComprovante(texto) {
-      const blob = new Blob([texto], { type: 'text/plain' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = 'comprovante.txt';
-      link.click();
-    }
-
-    atualizarHistorico();
-
-    // Bot de ajuda simples
     function abrirChat() {
       const chat = document.getElementById('chat-box');
       chat.style.display = chat.style.display === 'flex' ? 'none' : 'flex';
     }
+
     document.getElementById('chatInput').addEventListener('keypress', function(e) {
       if (e.key === 'Enter') {
         e.preventDefault();
         const pergunta = e.target.value;
         const chatLog = document.getElementById('chat-log');
         chatLog.innerHTML += `<div><strong>Você:</strong> ${pergunta}</div>`;
-        let resposta = 'Desculpe, ainda estou aprendendo. Tente novamente mais tarde!';
-        if (pergunta.toLowerCase().includes('robux')) resposta = 'Você pode comprar Robux com segurança clicando no botão "Comprar".';
-        if (pergunta.toLowerCase().includes('cupom')) resposta = 'Use o cupom "donos2025" para 20% de desconto!';
+        let resposta = "Não entendi sua pergunta.";
+        if (pergunta.toLowerCase().includes("robux")) resposta = "Você pode comprar Robux nos botões acima.";
+        else if (pergunta.toLowerCase().includes("cupom")) resposta = "Atualmente temos o cupom 'donos2025' com 20% de desconto.";
+        else if (pergunta.toLowerCase().includes("pagamento")) resposta = "Aceitamos pagamentos por cartão, Pix e boleto (em breve).";
         chatLog.innerHTML += `<div><strong>Bot:</strong> ${resposta}</div>`;
         e.target.value = '';
         chatLog.scrollTop = chatLog.scrollHeight;
       }
     });
-  </script>
-</body>
+  </script></body>
 </html>
