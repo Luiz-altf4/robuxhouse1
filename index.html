@@ -1,9 +1,11 @@
-<!-- Código atualizado com correções de bugs, validação e localStorage --><!DOCTYPE html><html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Robux House ✨ Loja Oficial</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="icon" href="https://cdn.iconscout.com/icon/free/png-256/roblox-282749.png" />
   <style>
     :root {
       --preto: #000;
@@ -12,23 +14,47 @@
       --azul-claro: #00e5ff;
       --verde: #38a169;
       --vermelho: #e53e3e;
+      --fundo-claro: linear-gradient(135deg, #fff, #ddd);
+      --fundo-escuro: linear-gradient(135deg, #000, #333);
+      --cor-texto-claro: #000;
+      --cor-texto-escuro: #eee;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, var(--preto), var(--branco));
-      color: var(--preto);
+      background: var(--fundo-escuro);
+      color: var(--cor-texto-escuro);
       display: flex;
       flex-direction: column;
       align-items: center;
       padding: 20px;
+      transition: background 0.5s, color 0.5s;
+    }
+    body.light {
+      background: var(--fundo-claro);
+      color: var(--cor-texto-claro);
     }
     header {
       text-align: center;
       margin-bottom: 40px;
     }
-    header h1 { font-size: 3rem; margin-top: 10px; color: var(--azul-claro); }
-    p.subtitle { font-size: 1.2rem; margin-top: 8px; color: #333; }
+    header h1 {
+      font-size: 3rem;
+      margin-top: 10px;
+      color: var(--azul-claro);
+      transition: color 0.5s;
+    }
+    body.light header h1 {
+      color: #007f9e;
+    }
+    p.subtitle {
+      font-size: 1.2rem;
+      margin-top: 8px;
+      color: #666;
+    }
+    body.light p.subtitle {
+      color: #444;
+    }
     .cards {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -42,9 +68,25 @@
       padding: 20px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
       text-align: center;
+      color: var(--preto);
+      transition: background 0.5s, color 0.5s;
     }
-    .card h3 { font-size: 1.5rem; color: var(--azul-claro); }
-    .card p { margin: 10px 0; font-size: 1rem; }
+    body.dark .card {
+      background: #222;
+      color: var(--cor-texto-escuro);
+      box-shadow: 0 4px 12px rgba(0,229,255,0.4);
+    }
+    .card h3 {
+      font-size: 1.5rem;
+      color: var(--azul-claro);
+    }
+    body.light .card h3 {
+      color: #007f9e;
+    }
+    .card p {
+      margin: 10px 0;
+      font-size: 1rem;
+    }
     .card button {
       padding: 10px 20px;
       background: var(--azul-claro);
@@ -53,6 +95,10 @@
       border-radius: 10px;
       cursor: pointer;
       font-weight: bold;
+      transition: background 0.3s;
+    }
+    .card button:hover {
+      background: #00bcd4;
     }
     .modal {
       display: none;
@@ -70,14 +116,33 @@
       border-radius: 10px;
       width: 90%;
       max-width: 400px;
+      color: #000;
     }
-    .modal-content h2 { margin-bottom: 20px; }
-    .modal-content input, .modal-content textarea {
+    body.dark .modal-content {
+      background: #222;
+      color: var(--cor-texto-escuro);
+      box-shadow: 0 0 10px rgba(0,229,255,0.5);
+    }
+    .modal-content h2 {
+      margin-bottom: 20px;
+    }
+    .modal-content input,
+    .modal-content textarea {
       width: 100%;
       padding: 10px;
       margin-bottom: 10px;
       border: 1px solid #ccc;
       border-radius: 5px;
+      font-size: 1rem;
+      color: #000;
+      background: #fff;
+      transition: background 0.5s, color 0.5s;
+    }
+    body.dark .modal-content input,
+    body.dark .modal-content textarea {
+      background: #333;
+      color: var(--cor-texto-escuro);
+      border-color: #00e5ff;
     }
     .modal-content button {
       width: 100%;
@@ -87,6 +152,11 @@
       color: var(--preto);
       font-weight: bold;
       border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .modal-content button:hover {
+      background: #00bcd4;
     }
     .message {
       margin-top: 30px;
@@ -96,6 +166,9 @@
       border-radius: 10px;
       display: none;
       font-weight: bold;
+      text-align: center;
+      max-width: 400px;
+      box-shadow: 0 0 12px var(--verde);
     }
     #bot-ajuda {
       position: fixed;
@@ -109,6 +182,7 @@
       color: var(--preto);
       cursor: pointer;
       box-shadow: 0 0 10px rgba(0,229,255,0.7);
+      z-index: 10000;
     }
     #chatbox {
       display: none;
@@ -120,180 +194,269 @@
       border: 1px solid #ccc;
       border-radius: 10px;
       padding: 10px;
-      z-index: 9999;
-    }
-    #historico, #avaliacoes, #suporte {
-      margin-top: 40px;
-      background: #fff;
+      z-index: 10000;
       color: #000;
+      transition: background 0.5s, color 0.5s;
+    }
+    body.dark #chatbox {
+      background: #222;
+      color: var(--cor-texto-escuro);
+      border-color: #00e5ff;
+    }
+    #historico, #avaliacoes, #suporte, #painelAdmin {
+      margin-top: 40px;
+      background: var(--branco);
+      color: var(--preto);
       padding: 20px;
       border-radius: 10px;
       width: 100%;
       max-width: 600px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      transition: background 0.5s, color 0.5s;
     }
-    #historico h3, #avaliacoes h3, #suporte h3 {
+    body.dark #historico, body.dark #avaliacoes, body.dark #suporte, body.dark #painelAdmin {
+      background: #222;
+      color: var(--cor-texto-escuro);
+      box-shadow: 0 4px 12px rgba(0,229,255,0.4);
+    }
+    #historico h3, #avaliacoes h3, #suporte h3, #painelAdmin h3 {
       margin-bottom: 10px;
       color: var(--azul-claro);
     }
-    #historico ul, #avaliacoes ul {
+    body.light #historico h3, body.light #avaliacoes h3, body.light #suporte h3, body.light #painelAdmin h3 {
+      color: #007f9e;
+    }
+    #historico ul, #avaliacoes ul, #painelAdmin ul {
       list-style: none;
       padding: 0;
+      max-height: 200px;
+      overflow-y: auto;
+      border-top: 1px solid #ccc;
     }
-    #historico li, #avaliacoes li {
+    #historico li, #avaliacoes li, #painelAdmin li {
       margin-bottom: 8px;
       border-bottom: 1px dashed #ccc;
       padding-bottom: 6px;
+      word-break: break-word;
     }
-    footer {
-      margin-top: 60px;
-      font-size: 0.9rem;
-      color: #333;
+    #loginSection {
+      margin-bottom: 30px;
+      width: 100%;
+      max-width: 400px;
+      background: var(--branco);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      color: var(--preto);
+      transition: background 0.5s, color 0.5s;
       text-align: center;
+    }
+    body.dark #loginSection {
+      background: #222;
+      color: var(--cor-texto-escuro);
+      box-shadow: 0 4px 12px rgba(0,229,255,0.4);
+    }
+    #loginSection input {
+      width: 80%;
+      padding: 10px;
+      font-size: 1rem;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      color: #000;
+      background: #fff;
+      transition: background 0.5s, color 0.5s;
+    }
+    body.dark #loginSection input {
+      background: #333;
+      color: var(--cor-texto-escuro);
+      border-color: #00e5ff;
+    }
+    #loginSection button {
+      padding: 10px 20px;
+      background: var(--azul-claro);
+      border: none;
+      color: var(--preto);
+      font-weight: bold;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    #loginSection button:hover {
+      background: #00bcd4;
+    }
+    #toggleThemeBtn {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 8px;
+      background: var(--azul-claro);
+      color: var(--preto);
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 0 8px rgba(0,229,255,0.7);
+      z-index: 10001;
+      transition: background 0.3s;
+    }
+    #toggleThemeBtn:hover {
+      background: #00bcd4;
     }
   </style>
 </head>
-<body>
+<body class="dark">
+  <button id="toggleThemeBtn" title="Alternar modo claro/escuro">Modo Claro</button>
+
   <header>
     <h1>Robux House</h1>
     <p class="subtitle">✨ Compre Robux com confiança e receba na hora ✨</p>
   </header>
-  <div class="cards">
-    <div class="card"><h3>🎁 Robux Especial</h3><p>1.500 Robux</p><button onclick="comprar(35.00, 'Robux Especial')">Comprar</button></div>
-    <div class="card"><h3>40 Robux</h3><p>R$1,00</p><button onclick="comprar(1.00, '40 Robux')">Comprar</button></div>
-    <div class="card"><h3>80 Robux</h3><p>R$2,00</p><button onclick="comprar(2.00, '80 Robux')">Comprar</button></div>
+
+  <section id="loginSection">
+    <div id="loginForm">
+      <input type="text" id="usernameInput" placeholder="Digite seu nome para entrar" />
+      <button onclick="login()">Entrar</button>
+    </div>
+    <div id="userGreeting" style="display:none;">
+      <p>Olá, <strong id="userNameDisplay"></strong>!</p>
+      <button onclick="logout()">Sair</button>
+      <button onclick="togglePainelAdminPrompt()">Painel Admin</button>
+    </div>
+  </section>
+
+  <div class="cards" id="produtosCards" style="display:none;">
+    <div class="card">
+      <h3>🎁 Robux Especial</h3>
+      <p>1.500 Robux</p>
+      <button onclick="comprar(35.00, 'Robux Especial')">Comprar</button>
+    </div>
+    <div class="card">
+      <h3>40 Robux</h3>
+      <p>R$1,00</p>
+      <button onclick="comprar(1.00, '40 Robux')">Comprar</button>
+    </div>
+    <div class="card">
+      <h3>80 Robux</h3>
+      <p>R$2,00</p>
+      <button onclick="comprar(2.00, '80 Robux')">Comprar</button>
+    </div>
+    <div class="card">
+      <h3>400 Robux</h3>
+      <p>R$10,00</p>
+      <button onclick="comprar(10.00, '400 Robux')">Comprar</button>
+    </div>
+    <div class="card">
+      <h3>800 Robux</h3>
+      <p>R$20,00</p>
+      <button onclick="comprar(20.00, '800 Robux')">Comprar</button>
+    </div>
+    <div class="card">
+      <h3>1700 Robux</h3>
+      <p>R$40,00</p>
+      <button onclick="comprar(40.00, '1700 Robux')">Comprar</button>
+    </div>
+    <div class="card">
+      <h3>4500 Robux</h3>
+      <p>R$100,00</p>
+      <button onclick="comprar(100.00, '4500 Robux')">Comprar</button>
+    </div>
+    <div class="card">
+      <h3>10.000 Robux</h3>
+      <p>R$200,00</p>
+      <button onclick="comprar(200.00, '10.000 Robux')">Comprar</button>
+    </div>
   </div>
+
   <div class="message" id="message"></div>
-  <div id="historico"><h3>Histórico de Compras</h3><ul id="lista-historico"></ul></div>
-  <div id="avaliacoes">
+
+  <div id="historico" style="display:none;">
+    <h3>Histórico de Compras</h3>
+    <ul id="lista-historico"></ul>
+  </div>
+
+  <div id="avaliacoes" style="display:none;">
     <h3>Avaliações</h3>
     <ul id="lista-avaliacoes"></ul>
     <textarea id="novaAvaliacao" placeholder="Escreva sua avaliação..."></textarea>
     <button onclick="enviarAvaliacao()">Enviar Avaliação</button>
   </div>
-  <div id="suporte">
+
+  <div id="suporte" style="display:none;">
     <h3>Suporte</h3>
-    <input type="email" id="emailSuporte" placeholder="Seu email">
+    <input type="email" id="emailSuporte" placeholder="Seu email" />
     <textarea id="mensagemSuporte" placeholder="Descreva seu problema"></textarea>
     <button onclick="enviarMensagemSuporte()">Enviar Mensagem</button>
   </div>
+
+  <div id="painelAdmin" style="display:none;">
+    <h3>Painel Admin</h3>
+    <strong>Compras:</strong>
+    <ul id="adminListaCompras"></ul>
+    <strong>Avaliações:</strong>
+    <ul id="adminListaAvaliacoes"></ul>
+  </div>
+
   <div class="modal" id="cupomModal">
     <div class="modal-content">
       <h2>Tem cupom de desconto?</h2>
-      <input type="text" id="cupomInput" placeholder="Digite o cupom (opcional)">
+      <input type="text" id="cupomInput" placeholder="Digite o cupom (opcional)" />
       <button onclick="verificarCupom()">Continuar</button>
     </div>
   </div>
+
   <div class="modal" id="pagamentoModal">
     <div class="modal-content">
       <h2>Pagamento</h2>
-      <input type="text" id="cartao" placeholder="Número do cartão">
-      <input type="text" id="nome" placeholder="Nome no cartão">
-      <input type="text" id="validade" placeholder="Validade (MM/AA)">
-      <input type="password" id="cvv" placeholder="CVV">
-      <button onclick="finalizarCompra()">Finalizar compra</button>
+      <input type="text" id="cartao" placeholder="Número do cartão" maxlength="19" />
+      <input type="text" id="nome" placeholder="Nome no cartão" />
+      <input type="text" id="validade" placeholder="Validade (MM/AA)" maxlength="5" />
+      <input type="password" id="cvv" placeholder="CVV" maxlength="4" />
+      <button id="finalizarCompraBtn" onclick="finalizarCompra()">Finalizar compra</button>
     </div>
   </div>
+
   <div id="chatbox">
     <strong>Bot de Ajuda:</strong>
     <p>Use o cupom <b>Donos2025</b> para 20% de desconto!</p>
     <p>Precisa de suporte? Role até o fim e envie uma mensagem.</p>
   </div>
-  <button id="bot-ajuda" onclick="toggleBot()">💬</button>
+
+  <button id="bot-ajuda" onclick="toggleBot()" title="Ajuda">💬</button>
+
   <footer>
     &copy; 2025 Robux House • Criado por Mopper e Zxkl
   </footer>
+
   <script>
+    // Estado global
     let precoOriginal = 0;
-    let descricaoProduto = '';window.onload = () => {
-  carregarHistorico();
-  carregarAvaliacoes();
-}
+    let descricaoProduto = '';
+    let currentUser = null;
+    const adminPassword = 'admin2025'; // senha fixa para painel admin
+    let painelAdminAberto = false;
 
-function comprar(preco, descricao) {
-  precoOriginal = preco;
-  descricaoProduto = descricao;
-  document.getElementById('cupomModal').style.display = 'flex';
-}
+    // Inicialização
+    window.onload = () => {
+      loadTheme();
+      carregarHistorico();
+      carregarAvaliacoes();
+      updateLoginUI();
+    };
 
-function verificarCupom() {
-  const cupom = document.getElementById('cupomInput').value.trim();
-  if (cupom.toLowerCase() === 'donos2025') precoOriginal *= 0.8;
-  document.getElementById('cupomModal').style.display = 'none';
-  document.getElementById('pagamentoModal').style.display = 'flex';
-}
+    // Modo claro/escuro
+    const toggleThemeBtn = document.getElementById('toggleThemeBtn');
+    toggleThemeBtn.onclick = () => {
+      document.body.classList.toggle('light');
+      if (document.body.classList.contains('light')) {
+        toggleThemeBtn.textContent = 'Modo Escuro';
+        localStorage.setItem('theme', 'light');
+      } else {
+        toggleThemeBtn.textContent = 'Modo Claro';
+        localStorage.setItem('theme', 'dark');
+      }
+    };
 
-function finalizarCompra() {
-  const cartao = document.getElementById('cartao').value.trim();
-  const nome = document.getElementById('nome').value.trim();
-  const validade = document.getElementById('validade').value.trim();
-  const cvv = document.getElementById('cvv').value.trim();
-  if (!cartao || !nome || !validade || !cvv) return alert('Preencha todos os campos.');
-  document.getElementById('pagamentoModal').style.display = 'none';
-  const msg = document.getElementById('message');
-  msg.innerText = `✅ Compra de ${descricaoProduto} finalizada por R$${precoOriginal.toFixed(2)}.`;
-  msg.style.display = 'block';
-  salvarHistorico(descricaoProduto, precoOriginal);
-  setTimeout(() => msg.style.display = 'none', 6000);
-}
-
-function salvarHistorico(produto, valor) {
-  const lista = document.getElementById('lista-historico');
-  const item = document.createElement('li');
-  item.textContent = `${new Date().toLocaleString()} - ${produto} - R$${valor.toFixed(2)}`;
-  lista.prepend(item);
-  const dados = JSON.parse(localStorage.getItem('historico') || '[]');
-  dados.unshift(item.textContent);
-  localStorage.setItem('historico', JSON.stringify(dados));
-}
-
-function carregarHistorico() {
-  const lista = document.getElementById('lista-historico');
-  const dados = JSON.parse(localStorage.getItem('historico') || '[]');
-  dados.forEach(item => {
-    const li = document.createElement('li');
-    li.textContent = item;
-    lista.appendChild(li);
-  });
-}
-
-function enviarAvaliacao() {
-  const texto = document.getElementById('novaAvaliacao').value.trim();
-  if (!texto) return alert('Escreva algo!');
-  const lista = document.getElementById('lista-avaliacoes');
-  const item = document.createElement('li');
-  item.textContent = texto;
-  lista.prepend(item);
-  document.getElementById('novaAvaliacao').value = '';
-  const dados = JSON.parse(localStorage.getItem('avaliacoes') || '[]');
-  dados.unshift(texto);
-  localStorage.setItem('avaliacoes', JSON.stringify(dados));
-}
-
-function carregarAvaliacoes() {
-  const lista = document.getElementById('lista-avaliacoes');
-  const dados = JSON.parse(localStorage.getItem('avaliacoes') || '[]');
-  dados.forEach(item => {
-    const li = document.createElement('li');
-    li.textContent = item;
-    lista.appendChild(li);
-  });
-}
-
-function enviarMensagemSuporte() {
-  const email = document.getElementById('emailSuporte').value.trim();
-  const texto = document.getElementById('mensagemSuporte').value.trim();
-  if (!email || !texto) return alert('Preencha todos os campos.');
-  alert('Mensagem enviada com sucesso! Responderemos em breve.');
-  document.getElementById('emailSuporte').value = '';
-  document.getElementById('mensagemSuporte').value = '';
-}
-
-function toggleBot() {
-  const chat = document.getElementById('chatbox');
-  chat.style.display = chat.style.display === 'block' ? 'none' : 'block';
-}
-
-  </script>
-</body>
-</html>
+    function loadTheme() {
+      const theme = localStorage.getItem('theme') || 'dark';
+      if (
