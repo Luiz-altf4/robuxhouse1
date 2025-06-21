@@ -12,13 +12,8 @@
       --verde: #38a169;
       --cinza-claro: #cbd5e0;
       --fundo-gradient: linear-gradient(135deg, #1e0033, #2e003e, #0f0c29);
-      --card-bg: rgba(255, 255, 255, 0.05);
     }
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Poppins', sans-serif;
       background: var(--fundo-gradient);
@@ -52,7 +47,7 @@
       max-width: 1200px;
     }
     .card {
-      background: var(--card-bg);
+      background: rgba(255, 255, 255, 0.07);
       border-radius: 20px;
       padding: 24px;
       text-align: center;
@@ -134,8 +129,7 @@
       background: #1a1a1a;
       border: 1px solid var(--azul-claro);
       border-radius: 10px;
-      width: 320px;
-      max-height: 350px;
+      width: 300px;
       display: none;
       flex-direction: column;
       box-shadow: 0 0 12px #00e5ff66;
@@ -151,14 +145,49 @@
       border-radius: 0 0 10px 10px;
     }
     #chat-log {
-      max-height: 250px;
+      max-height: 200px;
       overflow-y: auto;
       padding: 10px;
       font-size: 0.9rem;
       color: #edf2f7;
     }
-    #chat-log div {
-      margin-bottom: 6px;
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.7);
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-content {
+      background: #1a202c;
+      padding: 30px;
+      border-radius: 10px;
+      text-align: center;
+      width: 90%;
+      max-width: 400px;
+    }
+    .modal-content h2 {
+      margin-bottom: 20px;
+      color: var(--azul-claro);
+    }
+    .modal-content input, .modal-content button {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 6px;
+      border: none;
+    }
+    .modal-content input {
+      background: #2d3748;
+      color: #edf2f7;
+    }
+    .modal-content button {
+      background: var(--azul-claro);
+      font-weight: bold;
+      cursor: pointer;
     }
     footer {
       margin-top: 60px;
@@ -184,7 +213,14 @@
   </div>  <div class="download">
     <a href="RobuxCOMPROVANTE.py" download><button>💾 Baixar Script</button></a>
     <p>Compatível com PC e celular</p>
-  </div>  <div class="message" id="message"></div>  <div id="bot-ajuda" onclick="abrirChat()">🤖 Ajuda</div>
+  </div>  <div class="message" id="message"></div>  <div class="modal" id="cupomModal">
+    <div class="modal-content">
+      <h2>Adicionar cupom?</h2>
+      <input type="text" id="cupomInput" placeholder="Digite o cupom">
+      <button onclick="verificarCupom()">Aplicar</button>
+      <button onclick="mostrarMensagem()">Pular</button>
+    </div>
+  </div>  <div id="bot-ajuda" onclick="abrirChat()">🤖 Ajuda</div>
   <div id="chat-box">
     <div id="chat-log"></div>
     <textarea id="chatInput" rows="2" placeholder="Digite sua pergunta..."></textarea>
@@ -197,10 +233,19 @@
     function comprar(preco, descricao) {
       precoOriginal = preco;
       descricaoProduto = descricao;
-      finalizarCompra();
+      document.getElementById('cupomModal').style.display = 'flex';
     }
 
-    function finalizarCompra() {
+    function verificarCupom() {
+      const cupom = document.getElementById('cupomInput').value.toLowerCase();
+      if (cupom === 'donos2025') {
+        precoOriginal *= 0.8;
+      }
+      mostrarMensagem();
+    }
+
+    function mostrarMensagem() {
+      document.getElementById('cupomModal').style.display = 'none';
       const msg = document.getElementById('message');
       msg.innerText = `✅ Compra de ${descricaoProduto} finalizada com sucesso! Valor: R$${precoOriginal.toFixed(2)}`;
       msg.style.display = 'block';
@@ -222,14 +267,10 @@
         let resposta = "Desculpe, não entendi. Pode repetir?";
         if (pergunta.includes("robux")) resposta = "Você pode comprar Robux usando os botões acima.";
         else if (pergunta.includes("cupom")) resposta = "Temos o cupom 'donos2025' com 20% de desconto.";
-        else if (pergunta.includes("pagamento")) resposta = "Aceitamos pagamentos simulados com cartão. Em breve Pix.";
+        else if (pergunta.includes("pagamento")) resposta = "Atualmente aceitamos pagamentos simulados por cartão.";
         else if (pergunta.includes("suporte")) resposta = "Você pode falar conosco pelo Instagram: @robuxhouse.";
         else if (pergunta.includes("gratis")) resposta = "Robux grátis? Fique ligado nas promoções mensais!";
         else if (pergunta.includes("horário")) resposta = "Estamos disponíveis 24h por dia!";
-        else if (pergunta.includes("script")) resposta = "Você pode baixar nosso script clicando em 'Baixar Script'.";
-        else if (pergunta.includes("loja")) resposta = "Sim! Essa é a loja oficial da Robux House.";
-        else if (pergunta.includes("seguro")) resposta = "Nosso site é seguro e protegido.";
-        else if (pergunta.includes("método")) resposta = "Usamos métodos manuais para entrega dos Robux após confirmação.";
 
         chatLog.innerHTML += `<div><strong>Bot:</strong> ${resposta}</div>`;
         e.target.value = '';
