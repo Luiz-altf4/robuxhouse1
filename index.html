@@ -205,6 +205,12 @@
       box-shadow: 0 0 15px rgba(0, 229, 255, 0.3);
     }
 
+    #historico h2 {
+      color: var(--azul-claro);
+      margin-bottom: 12px;
+      user-select: none;
+    }
+
     #historico p {
       margin-bottom: 8px;
       user-select: text;
@@ -271,7 +277,7 @@
     }
 
     /* Responsividade */
-    @media(max-width: 480px) {
+    @media (max-width: 480px) {
       header h1 {
         font-size: 2.5rem;
       }
@@ -344,7 +350,7 @@
 
   <!-- Histórico de compras -->
   <section id="historico" aria-live="polite" aria-label="Histórico de compras">
-    <h2 style="color: var(--azul-claro); margin-bottom: 12px;">Histórico de compras</h2>
+    <h2>Histórico de compras</h2>
   </section>
 
   <!-- Modal cupom -->
@@ -420,11 +426,11 @@
   </footer>
 
   <script>
-    // Variáveis globais para a compra atual
+    // Variáveis globais para compra atual
     let precoOriginal = 0;
     let descricaoProduto = '';
 
-    // Função para abrir o modal de cupom com dados do produto
+    // Abrir modal cupom com dados da compra
     function comprar(preco, descricao) {
       precoOriginal = preco;
       descricaoProduto = descricao;
@@ -432,17 +438,17 @@
       mostrarModal('cupomModal');
     }
 
-    // Função para verificar o cupom e aplicar desconto
+    // Verifica cupom e aplica desconto se válido
     function verificarCupom() {
-      const cupom = document.getElementById('cupomInput').value.trim();
-      if (cupom.toLowerCase() === 'donos2025') {
+      const cupom = document.getElementById('cupomInput').value.trim().toLowerCase();
+      if (cupom === 'donos2025') {
         precoOriginal = +(precoOriginal * 0.8).toFixed(2);
       }
       fecharModal('cupomModal');
       mostrarModal('pagamentoModal');
     }
 
-    // Função para validar campos do pagamento (simples)
+    // Valida campos de pagamento (simples)
     function validarPagamento() {
       const numero = document.getElementById('numeroCartao').value.trim();
       const nome = document.getElementById('nomeCartao').value.trim();
@@ -453,11 +459,18 @@
         alert('Por favor, preencha todos os campos de pagamento.');
         return false;
       }
-      // Aqui pode adicionar regex para validar formatos, se quiser
       return true;
     }
 
-    // Finaliza a compra
+    // Limpa campos do formulário de pagamento
+    function limparCamposPagamento() {
+      document.getElementById('numeroCartao').value = '';
+      document.getElementById('nomeCartao').value = '';
+      document.getElementById('validadeCartao').value = '';
+      document.getElementById('cvvCartao').value = '';
+    }
+
+    // Finaliza compra
     function finalizarCompra() {
       if (!validarPagamento()) return;
 
@@ -467,21 +480,20 @@
       limparCamposPagamento();
     }
 
-    // Função para mostrar modal
+    // Mostrar modal
     function mostrarModal(id) {
       const modal = document.getElementById(id);
       modal.style.display = 'flex';
       modal.focus();
     }
 
-    // Função para fechar modal
+    // Fechar modal
     function fecharModal(id) {
       const modal = document.getElementById(id);
       modal.style.display = 'none';
     }
 
-    // Função para mostrar mensagem de confirmação
+    // Mostrar mensagem temporária
     function mostrarMensagem(texto) {
       const msg = document.getElementById('message');
-      msg.innerText = texto;
-      msg.style.display =
+      msg.innerText =
